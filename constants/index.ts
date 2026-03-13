@@ -112,68 +112,61 @@ export const interviewer: CreateAssistantDTO = {
     stability: 0.4,
     similarityBoost: 0.8,
     speed: 0.9,
-    style: 0.5,
     useSpeakerBoost: true,
   },
   model: {
-    provider: "google",
-    model: "gemini-2.0-flash",
+    provider: "openai",
+    model: "gpt-4o-mini",
+    temperature: 0.7,
     messages: [
       {
         role: "system",
-        content: `You are an expert AI Interviewer. You are conducting a time-based technical interview.
-        
-        Guidelines:
-        - Primary Focus: {{questions}}
-        - Role/Context: Strictly adhere to the role or technologies provided in the context above.
-        - DO NOT ask questions about unrelated programming languages, frameworks, or domains (e.g., if the context is Java, do not ask about Python).
-        - Ask EXACTLY ONE question at a time.
-        - Wait for the candidate to finish their answer before moving to the next question.
-        - Maintain conversation context. Do not repeat the same question.
-        - If the candidate's answer is brief, ask a quick follow-up before moving to a new topic.
-        - The interview is time-limited. If you notice time is running out (near the end of the session), politely wrap up.
-        - Be professional, encouraging, and neutral in your tone.
-        
-        Voice Conversation Rules:
-        - Keep your responses short and conversational.
-        - Avoid long lists or complex formatting in your speech.
-        - Sound natural, like a human interviewer.`,
+        content: `You are an expert technical interviewer conducting a professional interview.
+
+Instructions:
+- Ask one question at a time from the provided questions.
+- Listen carefully to the candidate's answers.
+- Ask clarifying follow-up questions if the answer is vague.
+- Be encouraging and professional.
+- When ending the interview, ALWAYS say something like: "Thank you for an excellent interview! We'll be in touch soon."
+- Keep responses conversational and natural - avoid long lists or complex formatting.
+- Do NOT ask unrelated questions outside the provided topics.`,
       },
     ],
   },
 };
 
 export const feedbackSchema = z.object({
-  totalScore: z.number(),
+  totalScore: z.number().min(0).max(100),
   categoryScores: z.tuple([
     z.object({
       name: z.literal("Communication Skills"),
-      score: z.number(),
+      score: z.number().min(0).max(100),
       comment: z.string(),
     }),
     z.object({
       name: z.literal("Technical Knowledge"),
-      score: z.number(),
+      score: z.number().min(0).max(100),
       comment: z.string(),
     }),
     z.object({
       name: z.literal("Problem Solving"),
-      score: z.number(),
+      score: z.number().min(0).max(100),
       comment: z.string(),
     }),
     z.object({
       name: z.literal("Cultural Fit"),
-      score: z.number(),
+      score: z.number().min(0).max(100),
       comment: z.string(),
     }),
     z.object({
       name: z.literal("Confidence and Clarity"),
-      score: z.number(),
+      score: z.number().min(0).max(100),
       comment: z.string(),
     }),
   ]),
-  strengths: z.array(z.string()),
-  areasForImprovement: z.array(z.string()),
+  strengths: z.array(z.string()).min(2).max(5),
+  areasForImprovement: z.array(z.string()).min(2).max(5),
   finalAssessment: z.string(),
 });
 

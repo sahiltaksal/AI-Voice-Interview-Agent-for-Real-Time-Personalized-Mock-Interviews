@@ -36,6 +36,12 @@ interface CreateFeedbackParams {
   feedbackId?: string;
 }
 
+interface FeedbackResult {
+  success: boolean;
+  feedbackId?: string;
+  error?: string;
+}
+
 interface User {
   name: string;
   email: string;

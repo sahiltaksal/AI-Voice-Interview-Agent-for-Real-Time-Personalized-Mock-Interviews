@@ -6,8 +6,13 @@ import { db } from "@/firebase/client";
 import { doc, onSnapshot } from "firebase/firestore";
 import { processResumeAction } from "@/lib/actions/resume.action";
 import { toast } from "sonner";
-import InterviewSetupModal from "./InterviewSetupModal";
-import { useEffect } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, Suspense } from "react";
+
+// ✅ OPTIMIZED: Lazy load modal component
+const InterviewSetupModal = dynamic(() => import("./InterviewSetupModal"), {
+    loading: () => <></>,
+});
 
 const ResumeUpload = ({ userId, initialData }: { userId: string, initialData?: any }) => {
     const [file, setFile] = useState<File | null>(null);
@@ -186,18 +191,20 @@ const ResumeUpload = ({ userId, initialData }: { userId: string, initialData?: a
                 )}
             </button>
 
-            {isSetupOpen && resumeData && (
-                <InterviewSetupModal
-                    isOpen={isSetupOpen}
-                    onClose={() => setIsSetupOpen(false)}
-                    type="resume"
-                    userId={userId}
-                    resumeData={{
-                        text: resumeData.extractedText,
-                        summary: resumeData.summary
-                    }}
-                />
-            )}
+            <Suspense fallback={<></>}>
+                {isSetupOpen && resumeData && (
+                    <InterviewSetupModal
+                        isOpen={isSetupOpen}
+                        onClose={() => setIsSetupOpen(false)}
+                        type="resume"
+                        userId={userId}
+                        resumeData={{
+                            text: resumeData.extractedText,
+                            summary: resumeData.summary
+                        }}
+                    />
+                )}
+            </Suspense>
         </div>
     );
 };

@@ -28,38 +28,51 @@ const InterviewDetails = async ({ params }: RouteParams) => {
       : null;
 
   return (
-    <>
-      <div className="flex flex-row gap-4 justify-between">
-        <div className="flex flex-row gap-4 items-center max-sm:flex-col">
-          <div className="flex flex-row gap-4 items-center">
-            <Image
-              src={getInterviewCover(id)}
-              alt="cover-image"
-              width={40}
-              height={40}
-              className="rounded-full object-cover size-[40px]"
-            />
-            <h3 className="capitalize">{interview.role} Interview</h3>
+    <main className="root-layout">
+      <section className="bg-dark-200 border border-dark-300 rounded-3xl p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <Image
+                src={getInterviewCover(id)}
+                alt="cover-image"
+                width={48}
+                height={48}
+                className="rounded-full object-cover"
+              />
+              <div>
+                <h2 className="text-2xl font-bold capitalize">{interview.role} Interview</h2>
+                <p className="text-sm text-gray-400">{interview.type} • {interview.duration} min</p>
+              </div>
+            </div>
+            <div className="mt-3 text-gray-300">Prepare through a structured voice interaction, instant scoring, and automated feedback generation.</div>
           </div>
 
-          <DisplayTechIcons techStack={interview.techstack} />
+          <div className="flex gap-2">
+            {interview.techstack?.map((tech, idx) => (
+              <span key={idx} className="text-xs px-3 py-1 rounded-full bg-primary/15 text-primary">{tech}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <div className="bg-dark-200 border border-dark-300 rounded-3xl p-5">
+          <h3 className="text-lg font-semibold mb-2">Voice Interview Controls</h3>
+          <p className="text-gray-300 text-sm">Use the voice call controls to begin and end the session. Speak clearly and stay concise. AI will analyze your answers automatically at completion.</p>
         </div>
 
-        <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit">
-          {interview.type}
-        </p>
-      </div>
-
-      <Agent
-        userName={user?.name || "Candidate"}
-        userId={user?.id}
-        interviewId={id}
-        type="interview"
-        questions={interview.questions}
-        feedbackId={feedback?.id}
-        duration={interview.duration}
-      />
-    </>
+        <Agent
+          userName={user?.name || "Candidate"}
+          userId={user?.id}
+          interviewId={id}
+          type="interview"
+          questions={interview.questions}
+          feedbackId={feedback?.id}
+          duration={interview.duration}
+        />
+      </section>
+    </main>
   );
 };
 
